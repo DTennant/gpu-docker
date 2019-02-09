@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+        server:
+                build:
+                        context: ./docker
+                        args:
+                                SSH_MASTER_USER: ${SSH_MASTER_USER}
+                                SSH_MASTER_PASS: ${SSH_MASTER_PASS}
+                hostname: gpuserver
+                ports:
+                        - "8222:22"
