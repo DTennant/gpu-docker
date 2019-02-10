@@ -7,6 +7,12 @@ services:
                         args:
                                 SSH_MASTER_USER: ${SSH_MASTER_USER}
                                 SSH_MASTER_PASS: ${SSH_MASTER_PASS}
+                                UID: ${UID}
+                                GID: ${GID}
                 hostname: gpuserver
                 ports:
                         - "8222:22"
+                        - "8297:8097"
+                        - "8090:8888"
+                volumes:
+                        - ./shared_data/:/home/data

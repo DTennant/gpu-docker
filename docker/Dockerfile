@@ -1,25 +1,37 @@
-FROM nvidia/cuda
+FROM nvidia/cuda:latest
 
 ARG SSH_MASTER_USER
 ARG SSH_MASTER_PASS
+ARG UID 
+ARG GID
 
-RUN apt-get update \
+RUN rm /etc/apt/sources.list.d/cuda.list \
+ && rm /etc/apt/sources.list.d/nvidia-ml.list \
+ && apt-get update \
  && apt-get install -y --no-install-recommends \
-    nano \
-    sudo \
-    vim \
-    openssh-server \
-    python3
+    sudo vim openssh-server python3 python3-dev \
+    python3-setuptools python3-pip tmux git wget curl
+
+COPY requirements.txt /tmp/requirements.txt
+COPY torch-1.0.1.post2-cp36-cp36m-manylinux1_x86_64.whl /tmp/torch-1.0.1.post2-cp36-cp36m-manylinux1_x86_64.whl
+WORKDIR /tmp
+RUN pip3 install wheel -i https://pypi.douban.com/simple \
+ && pip3 install gpustat -i https://pypi.douban.com/simple \
+ && pip3 install torch-1.0.1.post2-cp36-cp36m-manylinux1_x86_64.whl \
+ && pip3 install -r requirements.txt -i https://pypi.douban.com/simple \
+ && rm requirements.txt torch-1.0.1.post2-cp36-cp36m-manylinux1_x86_64.whl
 
 COPY ssh_config /etc/ssh/ssh_config
 COPY sshd_config /etc/ssh/sshd_config
+RUN ln -s /usr/bin/python3 /usr/bin/python && ln -s /usr/bin/pip3 /usr/bin/pip
 
 COPY user.sh /usr/local/bin/user.sh
-RUN chmod +x /usr/local/bin/user.sh
-RUN /usr/local/bin/user.sh
+RUN chmod +x /usr/local/bin/user.sh && /usr/local/bin/user.sh
 
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
+
+COPY tmux.conf /home/${SSH_MASTER_USER}/.tmux.conf
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD tail -f /dev/null
