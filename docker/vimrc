@@ -1,0 +1,36 @@
+set number
+set ts=4
+set expandtab
+set autoindent
+set scrolloff=5
+set laststatus=2
+set textwidth=80
+set hlsearch
+set incsearch
+set ignorecase
+set smartcase
+set undofile
+set nocompatible
+set backspace=indent,eol,start
+syntax on
+
+nmap <C-H> <C-W>h
+nmap <C-J> <C-W>j
+nmap <C-K> <C-W>k
+nmap <C-L> <C-W>l
+
+:colorscheme koehler
+
+inoremap ( ()<ESC>i
+
+inoremap [ []<ESC>i
+inoremap { {}<ESC>i
+inoremap ' ''<ESC>i
+inoremap " ""<ESC>i
+inoremap < <><ESC>i
+:autocmd InsertEnter * set cul
+:autocmd InsertLeave * set nocul
+
+hi Normal guibg=NONE ctermbg=NONE
+hi NonText guibg=NONE ctermbg=NONE
+

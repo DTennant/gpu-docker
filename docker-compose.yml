@@ -1,4 +1,4 @@
-version: '3'
+version: '3.5'
 
 services:
         server:
@@ -16,3 +16,4 @@ services:
                         - "8090:8888"
                 volumes:
                         - ./shared_data/:/home/data
+                shm_size: "4gb"

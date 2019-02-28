@@ -9,8 +9,11 @@ RUN rm /etc/apt/sources.list.d/cuda.list \
  && rm /etc/apt/sources.list.d/nvidia-ml.list \
  && apt-get update \
  && apt-get install -y --no-install-recommends \
-    sudo vim openssh-server python3 python3-dev \
-    python3-setuptools python3-pip tmux git wget curl
+    sudo vim openssh-server htop python3 python3-dev \
+    python3-setuptools python3-pip tmux git wget curl \
+    libglib2.0-0 libxext6 libsm6 libxrender1 zsh sed \
+    zip unzip tar \
+ && sed s/required/sufficient/g -i /etc/pam.d/chsh
 
 COPY requirements.txt /tmp/requirements.txt
 COPY torch-1.0.1.post2-cp36-cp36m-manylinux1_x86_64.whl /tmp/torch-1.0.1.post2-cp36-cp36m-manylinux1_x86_64.whl
@@ -32,7 +35,12 @@ COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 COPY tmux.conf /home/${SSH_MASTER_USER}/.tmux.conf
+COPY vimrc /home/${SSH_MASTER_USER}/.vimrc
+USER ${SSH_MASTER_USER}
+RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" \
+ && sed s/robbyrussell/ys/g -i /home/${SSH_MASTER_USER}/.zshrc 
 
+USER root
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD tail -f /dev/null
 
