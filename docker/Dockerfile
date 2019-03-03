@@ -1,4 +1,4 @@
-FROM nvidia/cuda:latest
+FROM nvidia/cuda:10.0-base
 
 ARG SSH_MASTER_USER
 ARG SSH_MASTER_PASS
@@ -9,8 +9,8 @@ RUN rm /etc/apt/sources.list.d/cuda.list \
  && rm /etc/apt/sources.list.d/nvidia-ml.list \
  && apt-get update \
  && apt-get install -y --no-install-recommends \
-    sudo vim openssh-server htop python3 python3-dev \
-    python3-setuptools python3-pip tmux git wget curl \
+    gcc g++ sudo vim openssh-server htop python3 python3-dev \
+    python-dev python3-setuptools python3-pip tmux git wget curl \
     libglib2.0-0 libxext6 libsm6 libxrender1 zsh sed \
     zip unzip tar \
  && sed s/required/sufficient/g -i /etc/pam.d/chsh
@@ -26,7 +26,7 @@ RUN pip3 install wheel -i https://pypi.douban.com/simple \
 
 COPY ssh_config /etc/ssh/ssh_config
 COPY sshd_config /etc/ssh/sshd_config
-RUN ln -s /usr/bin/python3 /usr/bin/python && ln -s /usr/bin/pip3 /usr/bin/pip
+RUN rm -f /usr/bin/python /usr/bin/pip && ln -s /usr/bin/python3 /usr/bin/python && ln -s /usr/bin/pip3 /usr/bin/pip
 
 COPY user.sh /usr/local/bin/user.sh
 RUN chmod +x /usr/local/bin/user.sh && /usr/local/bin/user.sh
