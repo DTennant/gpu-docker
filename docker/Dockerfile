@@ -1,4 +1,4 @@
-FROM nvidia/cuda:10.0-base
+FROM nvidia/cuda:10.0-devel
 
 ARG SSH_MASTER_USER
 ARG SSH_MASTER_PASS
@@ -16,13 +16,11 @@ RUN rm /etc/apt/sources.list.d/cuda.list \
  && sed s/required/sufficient/g -i /etc/pam.d/chsh
 
 COPY requirements.txt /tmp/requirements.txt
-COPY torch-1.0.1.post2-cp36-cp36m-manylinux1_x86_64.whl /tmp/torch-1.0.1.post2-cp36-cp36m-manylinux1_x86_64.whl
 WORKDIR /tmp
 RUN pip3 install wheel -i https://pypi.douban.com/simple \
  && pip3 install gpustat -i https://pypi.douban.com/simple \
- && pip3 install torch-1.0.1.post2-cp36-cp36m-manylinux1_x86_64.whl \
  && pip3 install -r requirements.txt -i https://pypi.douban.com/simple \
- && rm requirements.txt torch-1.0.1.post2-cp36-cp36m-manylinux1_x86_64.whl
+ && rm requirements.txt 
 
 COPY ssh_config /etc/ssh/ssh_config
 COPY sshd_config /etc/ssh/sshd_config
