@@ -8,4 +8,4 @@
  
 Host *
     HashKnownHosts yes
-    GSSAPIAuthentication yes")"
+    GSSAPIAuthentication yes
